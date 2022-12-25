@@ -1,0 +1,23 @@
+
+local Players = game:GetService("Players")
+local HttpService = game:GetService("HttpService")
+
+
+local webhookUrl = "YOUR_WEBHOOK_URL"
+
+
+Players.ChildAdded:Connect(function(player)
+
+	local message = {
+		content = "Player " .. player.Name .. " has connected at " .. os.date("%c"),
+	}
+	HttpService:PostAsync(webhookUrl, HttpService:JSONEncode(message))
+end)
+
+Players.ChildRemoved:Connect(function(player)
+
+	local message = {
+		content = "Player " .. player.Name .. " has disconnected at " .. os.date("%c"),
+	}
+	HttpService:PostAsync(webhookUrl, HttpService:JSONEncode(message))
+end)

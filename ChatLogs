@@ -1,0 +1,17 @@
+local HttpService = game:GetService("HttpService")
+
+local discordWebhookUrl = "YOUR_WEBHOOK_URL"
+
+game.Players.PlayerAdded:Connect(function(player)
+	player.Chatted:Connect(function(message)
+		local payload = {
+			content = string.format("[%s] %s: %s", os.date("%Y-%m-%d %H:%M:%S"), player.Name, message)
+		}
+		local success, response = pcall(function()
+			return HttpService:PostAsync(discordWebhookUrl, HttpService:JSONEncode(payload))
+		end)
+		if not success then
+			print("Error sending chat message to Discord: " .. response)
+		end
+	end)
+end)

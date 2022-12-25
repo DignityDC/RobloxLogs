@@ -1,0 +1,25 @@
+local Players = game:GetService("Players")
+local Teams = game:GetService("Teams")
+local HttpService = game:GetService("HttpService")
+
+local webhookUrl = "YOUR_WEBHOOK_URL"
+
+Players.PlayerAdded:Connect(function(player)
+	local oldTeam = player.Team
+	player.Changed:Connect(function(property)
+		if property == "Team" then
+			local newTeam = player.Team
+			local message = player.Name .. " switched from **" .. oldTeam.Name .. "** to **" .. newTeam.Name .. "**"
+			local payload = {
+				content = message
+			}
+			local success, response = pcall(function()
+				return HttpService:PostAsync(webhookUrl, HttpService:JSONEncode(payload))
+			end)
+			if not success then
+				warn("Failed to send message to Discord webhook: " .. response)
+			end
+			oldTeam = newTeam
+		end
+	end)
+end)
